@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hộp Quà 3D - Cảm ứng</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <script>
+        // Tạo scene, camera và renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Tạo hộp quà
+        const geometry = new THREE.BoxGeometry(2, 2, 2);
+        const material = new THREE.MeshStandardMaterial({ color: 0xff0000, metalness: 0.6, roughness: 0.4 });
+        const box = new THREE.Mesh(geometry, material);
+        scene.add(box);
+
+        // Tạo ánh sáng
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(2, 3, 4);
+        scene.add(light);
+
+        // Thiết lập camera
+        camera.position.z = 5;
+
+        // Biến lưu trữ vị trí chạm
+        let touchX = 0, touchY = 0;
+
+        // Xử lý sự kiện cảm ứng
+        document.addEventListener("touchstart", (event) => {
+            touchX = event.touches[0].clientX;
+            touchY = event.touches[0].clientY;
+        });
+
+        document.addEventListener("touchmove", (event) => {
+            let deltaX = event.touches[0].clientX - touchX;
+            let deltaY = event.touches[0].clientY - touchY;
+            box.rotation.y += deltaX * 0.005;
+            box.rotation.x += deltaY * 0.005;
+            touchX = event.touches[0].clientX;
+            touchY = event.touches[0].clientY;
+        });
+
+        // Hiệu ứng xoay tự động
+        function animate() {
+            requestAnimationFrame(animate);
+            box.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
